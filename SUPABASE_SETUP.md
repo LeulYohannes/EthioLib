@@ -15,7 +15,10 @@ To use the database features of EthioLib, follow these steps:
    ```env
    VITE_SUPABASE_URL=your_project_url
    VITE_SUPABASE_ANON_KEY=your_anon_key
+   VITE_APP_URL=https://your-app-domain.com
    ```
+   `VITE_APP_URL` ensures Supabase confirmation emails return users to your app instead of localhost.
+
 
 ## 3. Run the SQL Schema
 Go to the **SQL Editor** in the side menu and run the following script to set up your tables:

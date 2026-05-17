@@ -12,6 +12,7 @@ export default function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const emailRedirectTo = (import.meta as any).env.VITE_APP_URL || window.location.origin;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,6 +48,9 @@ export default function Auth() {
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo,
+          },
         });
 
         if (signUpError) {
