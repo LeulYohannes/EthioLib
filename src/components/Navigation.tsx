@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Book as BookIcon, Library, GraduationCap, Sparkles, User, Search, Menu, X } from 'lucide-react';
+import { Book as BookIcon, Library, GraduationCap, Sparkles, User, Search, Menu, X, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 const navItems = [
   { name: 'Educational', path: '/educational', icon: GraduationCap },
@@ -13,6 +14,19 @@ const navItems = [
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setIsOpen(false);
+  };
+
+  const getUserDisplay = () => {
+    if (user?.email) {
+      return user.email.split('@')[0]; // Show just the email prefix
+    }
+    return 'User';
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
@@ -48,10 +62,26 @@ export default function Navigation() {
             <button className="p-2 text-gray-500 hover:text-indigo-600 transition-colors">
               <Search size={20} />
             </button>
-            <Link to="/auth" className="flex items-center space-x-2 bg-gray-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-gray-200">
-              <User size={18} />
-              <span>Sign In</span>
-            </Link>
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-sm font-medium">
+                  <User size={18} />
+                  <span>{getUserDisplay()}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut size={20} />
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" className="flex items-center space-x-2 bg-gray-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-gray-200">
+                <User size={18} />
+                <span>Sign In</span>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -93,14 +123,30 @@ export default function Navigation() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-gray-100">
-                <Link
-                  to="/auth"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center space-x-3 px-3 py-3 rounded-xl text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100"
-                >
-                  <User size={20} />
-                  <span>Sign In</span>
-                </Link>
+                {user ? (
+                  <>
+                    <div className="px-3 py-3 text-sm font-medium text-gray-600 flex items-center space-x-2">
+                      <User size={18} />
+                      <span>{getUserDisplay()}</span>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-base font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center space-x-3 px-3 py-3 rounded-xl text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100"
+                  >
+                    <User size={20} />
+                    <span>Sign In</span>
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>

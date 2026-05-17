@@ -9,25 +9,28 @@ import Home from '@/src/pages/Home';
 import Education from '@/src/pages/Education';
 import Fiction from '@/src/pages/Fiction';
 import Auth from '@/src/pages/Auth';
+import Library from '@/src/pages/Library';
 import { motion, AnimatePresence } from 'motion/react';
+import { AuthProvider } from '@/src/contexts/AuthContext';
 
 export default function App() {
   return (
-    <Router>
-      <div className="min-h-screen font-sans text-gray-900 selection:bg-indigo-100 selection:text-indigo-900">
-        <Navigation />
-        <main>
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/educational" element={<Education />} />
-              <Route path="/fiction" element={<Fiction />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/library" element={<div className="p-20 text-center text-gray-500 font-bold">Personal Library Coming Soon</div>} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </AnimatePresence>
-        </main>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen font-sans text-gray-900 selection:bg-indigo-100 selection:text-indigo-900">
+          <Navigation />
+          <main>
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/educational" element={<Education />} />
+                <Route path="/fiction" element={<Fiction />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/library" element={<Library />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AnimatePresence>
+          </main>
         
         {/* Simple Footer */}
         <footer className="bg-white border-t border-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -50,5 +53,6 @@ export default function App() {
         </footer>
       </div>
     </Router>
+    </AuthProvider>
   );
 }
